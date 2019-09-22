@@ -155,6 +155,12 @@ app.post('/stats', function (req, res) {
   }
   
   var b = req.body;
+
+  // what we're receiving from app seems to come as a string rather than JSON ....?
+  if(typeof b == 'string') {
+    b = JSON.parse(b);
+  }
+
   var clientIP = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
   b.date = new Date();
