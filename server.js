@@ -117,19 +117,43 @@ app.get('/pagecount', function (req, res) {
 });
 
 var bodyParser = require('body-parser')
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
 
-// if we want to pretty-print dump's results ....
-//app.set('json spaces', 3);
-
 app.get('/dump', function (req, res) {
   if (!db) {
     initDb(function(err){});
   }
+
+  app.set('json spaces', 0);
+
+  if(db) {
+    var col = db.collection('stats');
+    col.find().toArray(function(err,result, docs) {
+      if(err){
+        res.send(err);
+      }
+      else {
+        //res.send(prettyPrint(result));
+        res.json(result); 
+      }
+    });
+  } else {
+     res.send('fail - no DB.');
+  }
+});
+
+
+app.get('/dumpp', function (req, res) {
+  if (!db) {
+    initDb(function(err){});
+  }
+
+  // if we want to pretty-print dump's results ....
+  app.set('json spaces', 3);
 
   if(db) {
     var col = db.collection('stats');
@@ -154,12 +178,38 @@ app.post('/stats', function (req, res) {
     initDb(function(err){});
   }
   
+  // convert from whatever it is we're getting from the app to a JSON object .............
   var b = req.body;
-
-  // what we're receiving from app seems to come as a string rather than JSON ....?
-  if(typeof b == 'string') {
+  var keys = Object.keys(b);
+  console.log("Body keys: " + keys);
+  console.log("Body keys sz: " + size(keys));
+  if(size(keys) == 1) {
+    b = keys[0];
     b = JSON.parse(b);
   }
+  /*
+  console.log("Body keys: " + Object.keys(b));
+  console.log("Body is: " + prettyPrint(b)); 
+
+  b = JSON.stringify(b);
+  b = JSON.parse(b).data;
+  */
+  console.log("Body2 is: " + prettyPrint(b));
+  
+  //b = JSON.parse(b);
+  /*
+  // what we're receiving from app seems to come as a string rather than JSON ....?
+  if(typeof b == 'string') {
+    console.log("Body is string - trying to unescape + parse ......");
+    //b = unescape(b);
+    b = JSON.parse(b);
+  }
+  else {
+    console.log("Body is not a string ......");
+  }
+  //b = eval("(" + b + ")");
+  */
+  console.log("Parsed body is: " + prettyPrint(b));
 
   var clientIP = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
