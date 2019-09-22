@@ -1,3 +1,5 @@
+require('./common.js');
+
 //  OpenShift sample Node application
 var express = require('express'),
     app     = express(),
@@ -80,17 +82,22 @@ app.get('/', function (req, res) {
     initDb(function(err){});
   }
   if (db) {
-    var col = db.collection('counts');
-    // Create a document with request IP and current time of request
-    col.insert({ip: req.ip, date: Date.now()});
-    col.count(function(err, count){
-      if (err) {
-        console.log('Error running count. Message:\n'+err);
+    var col = db.collection('stats');
+
+    col.find().sort({date:-1}).limit(50).toArray(function(err,result, docs) {
+      if(err){
+        res.send(err);
       }
-      res.render('index.html', { pageCountMessage : count, dbInfo: dbDetails });
+      else {
+
+        // Create a document with request IP and current time of request
+        // col.insert({ip: req.ip, date: Date.now()});
+        res.render('index.html', { dbInfo: dbDetails, dbLatest: result });
+      }
     });
+
   } else {
-    res.render('index.html', { pageCountMessage : null});
+    res.render('index.html', { dbLatest: null });
   }
 });
 
@@ -108,6 +115,39 @@ app.get('/pagecount', function (req, res) {
     res.send('{ pageCount: -1 }');
   }
 });
+
+var bodyParser = require('body-parser')
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
+
+app.post('/stats', function (req, res) {
+  // try to initialize the db on every request if it's not already
+  // initialized.
+  if (!db) {
+    initDb(function(err){});
+  }
+  
+  var b = req.body;
+  var clientIP = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+  b.date = new Date();
+  b.clientIP = clientIP;
+
+  console.log("ClientIP: " + clientIP);
+  console.log("Received stats: " + prettyPrint(b));
+
+  if (db) {
+    var col = db.collection('stats');
+    col.insertOne(b, (err, result) => {
+      res.send("success, data: " + prettyPrint(b));
+    });
+  } else {
+    res.send('fail - no DB. data: ' + prettyPrint(b));
+  }
+});
+
 
 // error handling
 app.use(function(err, req, res, next){

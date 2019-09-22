@@ -284,21 +284,31 @@ $ git push</pre>
                     <li><a href="http://git-scm.com/documentation">Git documentation</a></li>
                   </ul>
 
-                <h2>Request information</h2>
-                <p>Page view count:
-                <% if (pageCountMessage) { %>
-                   <span class="code" id="count-value"><%=pageCountMessage%></span>
+                <h2>Latest Stats Entries</h2>
+                <p>
+                <% if (dbLatest) { %>
+                   <span class="code" id="count-value"><%=JSON.stringify(dbLatest)%></span>
                    </p>
-                    <div class="code"><h3>DB Connection Info:</h3>
-                      <table style='margin-left: 20px'>
-                          <tr><td>Type:</td><td><%= dbInfo.type %></td></tr>
-                          <tr><td>URL:</td><td><%= dbInfo.url %></td></tr>
-                      </table>
-                    </div>
                 <% } else { %>
                    <span class="code" id="count-value">No database configured</span>
                    </p>
                 <%} %>
+
+               <h2>Test Stats Submission</h2>
+					<form action="stats" method="post">
+					  <div>
+					    <label for="say">What greeting do you want to say?</label>
+					    <input name="say" id="say" value="Hi">
+					  </div>
+					  <div>
+					    <label for="to">Who do you want to say it to?</label>
+					    <input name="to" id="to" value="Mom">
+					  </div>
+					  <div>
+					    <button>Send my greetings</button>
+					  </div>
+					</form>
+
           </section>
         </div>
 
