@@ -122,6 +122,31 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
+
+// if we want to pretty-print dump's results ....
+//app.set('json spaces', 3);
+
+app.get('/dump', function (req, res) {
+  if (!db) {
+    initDb(function(err){});
+  }
+
+  if(db) {
+    var col = db.collection('stats');
+    col.find().toArray(function(err,result, docs) {
+      if(err){
+        res.send(err);
+      }
+      else {
+        //res.send(prettyPrint(result));
+        res.json(result); 
+      }
+    });
+  } else {
+     res.send('fail - no DB.');
+  }
+});
+
 app.post('/stats', function (req, res) {
   // try to initialize the db on every request if it's not already
   // initialized.
