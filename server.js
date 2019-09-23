@@ -84,7 +84,7 @@ app.get('/', function (req, res) {
   if (db) {
     var col = db.collection('stats');
 
-    col.find().sort({date:-1}).limit(50).toArray(function(err,result, docs) {
+    col.find().sort({_id:-1}).limit(50).toArray(function(err,result, docs) {
       if(err){
         res.send(err);
       }
@@ -123,7 +123,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 })); 
 
 
-app.get('/dump', function (req, res) {
+app.get('/dumpall', function (req, res) {
   if (!db) {
     initDb(function(err){});
   }
@@ -157,7 +157,9 @@ app.get('/dumpp', function (req, res) {
 
   if(db) {
     var col = db.collection('stats');
-    col.find().toArray(function(err,result, docs) {
+
+    col.find().sort({_id:-1}).limit(1000).toArray(function(err,result, docs) {
+    //col.find().toArray(function(err,result, docs) {
       if(err){
         res.send(err);
       }
