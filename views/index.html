@@ -283,10 +283,13 @@ $ git push</pre>
                     <li><a href="http://stackoverflow.com/questions/tagged/openshift">Stack Overflow questions for OpenShift</a></li>
                     <li><a href="http://git-scm.com/documentation">Git documentation</a></li>
                   </ul>
-
                 <h2>Latest Stats Entries</h2>
+                <% if (dbNumItems) { %>
+                	<p>Total number of rows: <%=dbNumItems%></p>
+                <% } %>
                 <p>
                 <% if (dbLatest) { %>
+                	Last 50 rows:</p><p>
                    <span class="code" id="count-value"><%=JSON.stringify(dbLatest)%></span>
                    </p>
                 <% } else { %>

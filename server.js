@@ -89,10 +89,16 @@ app.get('/', function (req, res) {
         res.send(err);
       }
       else {
-
-        // Create a document with request IP and current time of request
-        // col.insert({ip: req.ip, date: Date.now()});
-        res.render('index.html', { dbInfo: dbDetails, dbLatest: result });
+        col.count({}, function(err, numDocs) {
+          if(err) {
+            res.send(err);
+          }
+          else {
+            // Create a document with request IP and current time of request
+            // col.insert({ip: req.ip, date: Date.now()});
+            res.render('index.html', { dbInfo: dbDetails, dbLatest: result, dbNumItems: numDocs });
+          }
+        });
       }
     });
 
