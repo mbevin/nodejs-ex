@@ -225,11 +225,12 @@ pre {
 
 <section class='container'>
           <hgroup>
-            <h1>Welcome to your Node.js application on OpenShift</h1>
+            <h1>Fling2 Prototype Stats</h1>
           </hgroup>
 
 
         <div class="row">
+ <!--
           <section class='col-xs-12 col-sm-6 col-md-6'>
             <section>
               <h2>How to use this example application</h2>
@@ -271,8 +272,9 @@ $ git push</pre>
             </section>
 
           </section>
+-->
           <section class="col-xs-12 col-sm-6 col-md-6">
-
+<!--
                 <h2>Managing your application</h2>
 
                 <p>Documentation on how to manage your application from the Web Console or Command Line is available at the <a href="http://docs.okd.io/latest/dev_guide/overview.html">Developer Guide</a>.</p>
@@ -292,6 +294,7 @@ $ git push</pre>
                     <li><a href="http://stackoverflow.com/questions/tagged/openshift">Stack Overflow questions for OpenShift</a></li>
                     <li><a href="http://git-scm.com/documentation">Git documentation</a></li>
                   </ul>
+-->                  
                 <h2>Latest Stats Entries</h2>
                 <% if (dbNumItems) { %>
                 	<p>Total number of rows: <%=dbNumItems%></p>
@@ -299,7 +302,7 @@ $ git push</pre>
                 <p>
                 <% if (dbLatest) { %>
                 	Last 50 rows:</p><p>
-                   <span class="code" id="count-value"><%=JSON.stringify(dbLatest)%></span>
+                   <pre><span class="code" id="count-value"><%=JSON.stringify(dbLatest, null, 4)%></span></pre>
                    </p>
                 <% } else { %>
                    <span class="code" id="count-value">No database configured</span>
