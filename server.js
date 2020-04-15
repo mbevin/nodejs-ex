@@ -129,19 +129,19 @@ function getQ(req, defaultLimit) {
     if(limit) {
       q = q.limit(limit);
     }
-    return q;
+    return { q, col };
   }
   return undefined;
 }
 app.get('/', function (req, res) {  
-  q = getQ(req, 50);
-  if(q) {
-    q.toArray(function(err,result, docs) {
+  var qq = getQ(req, 50);
+  if(qq && qq.q) {
+    qq.q.toArray(function(err,result, docs) {
       if(err){
         res.send(err);
       }
       else {
-        col.count({}, function(err, numDocs) {
+        qq.col.count({}, function(err, numDocs) {
           if(err) {
             res.send(err);
           }
@@ -183,10 +183,10 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 // dump not pretty-printed with default no limit ....  
 app.get('/dumpall', function (req, res) {
   app.set('json spaces', 0);
-  q = getQ(req);
+  var qq = getQ(req);
 
-  if(q) {
-    q.toArray(function(err,result, docs) {
+  if(qq && qq.q) {
+    qq.q.toArray(function(err,result, docs) {
       if(err){
         res.send(err);
       }
@@ -204,10 +204,10 @@ app.get('/dumpall', function (req, res) {
 // dump pretty-printed with default limit of 1000 results ....  
 app.get('/dumpp', function (req, res) {
   app.set('json spaces', 3);
-  q = getQ(req, 1000);
+  var qq = getQ(req, 1000);
 
-  if(q) {
-    q.toArray(function(err,result, docs) {
+  if(qq && qq.q) {
+    qq.q.toArray(function(err,result, docs) {
     //col.find().toArray(function(err,result, docs) {
       if(err){
         res.send(err);
