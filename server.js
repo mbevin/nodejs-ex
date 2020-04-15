@@ -101,11 +101,11 @@ app.get('/', function (req, res) {
       doQuery = true;
     }
     let debugBuild = req.query.debugBuild;
-    if(debug) {
+    if(debugBuild) {
       query.debugBuild = debugBuild;
     }
     let guid = req.query.guid;
-    if(debug) {
+    if(guid) {
       query.guid = guid;
     }
     let puzzleN = req.query.puzzleN;
