@@ -86,8 +86,38 @@ app.get('/', function (req, res) {
   }
   if (db) {
     var col = db.collection('stats');
+    let limit = req.query.limit;
+    if(!limit) {
+      limit = 50;
+    }
 
-    col.find().sort({_id:-1}).limit(50).toArray(function(err,result, docs) {
+    let q = col.find().sort({_id:-1}).limit(limit);
+
+    let query = {};
+    let doQuery = false;
+    let installID = req.query.installID;
+    if(installID) {
+      query.installID = installID;
+      doQuery = true;
+    }
+    let debugBuild = req.query.debugBuild;
+    if(debug) {
+      query.debugBuild = debugBuild;
+    }
+    let guid = req.query.guid;
+    if(debug) {
+      query.guid = guid;
+    }
+    let puzzleN = req.query.puzzleN;
+    if(puzzleN) {
+      query.puzzleN = puzzleN;
+    }
+
+
+    if(doQuery) {
+      q.find(query);
+    }
+    q.toArray(function(err,result, docs) {
       if(err){
         res.send(err);
       }
