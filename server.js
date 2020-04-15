@@ -94,6 +94,9 @@ function getQ(req, defaultLimit) {
         limit = defaultLimit;
       }
     }
+    else {
+      limit = parseInt(limit);
+    }
 
     var q;
 
@@ -101,22 +104,22 @@ function getQ(req, defaultLimit) {
     let doQuery = false;
     let installID = req.query.installID;
     if(installID) {
-      query.installID = installID;
+      query.installID = parseInt(installID);
       doQuery = true;
     }
     let debugBuild = req.query.debugBuild;
     if(debugBuild) {
-      query.debugBuild = debugBuild;
+      query.debugBuild = (debugBuild == 'true');
       doQuery = true;
     }
     let guid = req.query.guid;
     if(guid) {
-      query.guid = guid;
+      query.guid = parseInt(guid);
       doQuery = true;
     }
     let puzzleN = req.query.puzzleN;
     if(puzzleN) {
-      query.puzzleN = puzzleN;
+      query.puzzleN = parseInt(puzzleN);
       doQuery = true;
     }
 
