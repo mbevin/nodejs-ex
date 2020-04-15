@@ -91,7 +91,7 @@ app.get('/', function (req, res) {
       limit = 50;
     }
 
-    let q = col.find().sort({_id:-1}).limit(limit);
+    var q;
 
     let query = {};
     let doQuery = false;
@@ -113,9 +113,11 @@ app.get('/', function (req, res) {
       query.puzzleN = puzzleN;
     }
 
-
     if(doQuery) {
-      q.find(query);
+      q = col.find(query).sort({_id:-1}).limit(limit);
+    }
+    else {
+      q = col.find().sort({_id:-1}).limit(limit);
     }
     q.toArray(function(err,result, docs) {
       if(err){
