@@ -78,17 +78,21 @@ var initDb = function(callback) {
   });
 };
 
-app.get('/', function (req, res) {
+function getQ(req, defaultLimit) {
+
   // try to initialize the db on every request if it's not already
   // initialized.
   if (!db) {
     initDb(function(err){});
   }
+
   if (db) {
     var col = db.collection('stats');
     let limit = req.query.limit;
     if(!limit) {
-      limit = 50;
+      if(defaultLimit) {
+        limit = defaultLimit;
+      }
     }
 
     var q;
@@ -103,22 +107,35 @@ app.get('/', function (req, res) {
     let debugBuild = req.query.debugBuild;
     if(debugBuild) {
       query.debugBuild = debugBuild;
+      doQuery = true;
     }
     let guid = req.query.guid;
     if(guid) {
       query.guid = guid;
+      doQuery = true;
     }
     let puzzleN = req.query.puzzleN;
     if(puzzleN) {
       query.puzzleN = puzzleN;
+      doQuery = true;
     }
 
     if(doQuery) {
-      q = col.find(query).sort({_id:-1}).limit(limit);
+      q = col.find(query).sort({_id:-1})
     }
     else {
-      q = col.find().sort({_id:-1}).limit(limit);
+      q = col.find().sort({_id:-1})
     }
+    if(limit) {
+      q = q.limit(limit);
+    }
+    return q;
+  }
+  return undefined;
+}
+app.get('/', function (req, res) {  
+  q = getQ(req, 50);
+  if(q) {
     q.toArray(function(err,result, docs) {
       if(err){
         res.send(err);
@@ -163,17 +180,13 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-
+// dump not pretty-printed with default no limit ....  
 app.get('/dumpall', function (req, res) {
-  if (!db) {
-    initDb(function(err){});
-  }
-
   app.set('json spaces', 0);
+  q = getQ(req);
 
-  if(db) {
-    var col = db.collection('stats');
-    col.find().toArray(function(err,result, docs) {
+  if(q) {
+    q.toArray(function(err,result, docs) {
       if(err){
         res.send(err);
       }
@@ -188,18 +201,13 @@ app.get('/dumpall', function (req, res) {
 });
 
 
+// dump pretty-printed with default limit of 1000 results ....  
 app.get('/dumpp', function (req, res) {
-  if (!db) {
-    initDb(function(err){});
-  }
-
-  // if we want to pretty-print dump's results ....
   app.set('json spaces', 3);
+  q = getQ(req, 1000);
 
-  if(db) {
-    var col = db.collection('stats');
-
-    col.find().sort({_id:-1}).limit(1000).toArray(function(err,result, docs) {
+  if(q) {
+    q.toArray(function(err,result, docs) {
     //col.find().toArray(function(err,result, docs) {
       if(err){
         res.send(err);
