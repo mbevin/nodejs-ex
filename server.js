@@ -78,7 +78,7 @@ var initDb = function(callback) {
   });
 };
 
-function getQ(req, defaultLimit) {
+function getQ(req, defaultLimit, mostRecentFirst=true) {
 
   // try to initialize the db on every request if it's not already
   // initialized.
@@ -124,10 +124,13 @@ function getQ(req, defaultLimit) {
     }
 
     if(doQuery) {
-      q = col.find(query).sort({_id:-1})
+      q = col.find(query);
     }
     else {
-      q = col.find().sort({_id:-1})
+      q = col.find();
+    }
+    if(mostRecentFirst) {
+      q = q.sort({_id:-1});
     }
     if(limit) {
       q = q.limit(limit);
@@ -186,7 +189,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 // dump not pretty-printed with default no limit ....  
 app.get('/dumpall', function (req, res) {
   app.set('json spaces', 0);
-  var qq = getQ(req);
+  var qq = getQ(req, undefined, false);
 
   if(qq && qq.q) {
     qq.q.toArray(function(err,result, docs) {
