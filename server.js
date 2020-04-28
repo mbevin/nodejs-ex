@@ -122,6 +122,11 @@ function getQ(req, defaultLimit, mostRecentFirst=true) {
       query.puzzleN = parseInt(puzzleN);
       doQuery = true;
     }
+    let buildVer = req.query.buildVer;
+    if(buildVer) {
+      query.puzzleN = buildVer;
+      doQuery = true;
+    }
 
     if(doQuery) {
       q = col.find(query);
