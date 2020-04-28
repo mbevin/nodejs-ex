@@ -119,12 +119,20 @@ function getQ(req, defaultLimit, mostRecentFirst=true) {
     }
     let puzzleN = req.query.puzzleN;
     if(puzzleN) {
+      //console.log("querying for puzzleN: '" + puzzleN + "'");
       query.puzzleN = parseInt(puzzleN);
       doQuery = true;
     }
     let buildVer = req.query.buildVer;
     if(buildVer) {
-      query.puzzleN = buildVer;
+      //console.log("querying for buildVer: '" + buildVer + "'");
+      query.buildVer = buildVer;
+      doQuery = true;
+    }
+    let clientIP = req.query.clientIP;
+    if(clientIP) {
+      //console.log("querying for clientIP: '" + clientIP + "'");
+      query.clientIP = clientIP;
       doQuery = true;
     }
 
@@ -159,7 +167,7 @@ app.get('/', function (req, res) {
           else {
             // Create a document with request IP and current time of request
             // col.insert({ip: req.ip, date: Date.now()});
-            res.render('index.html', { dbInfo: dbDetails, dbLatest: result, dbNumItems: numDocs });
+            res.render('index.html', { dbInfo: dbDetails, dbLatest: result, dbNumItems: numDocs, dbNumResults: size(result) });
           }
         });
       }

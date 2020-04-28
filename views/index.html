@@ -301,7 +301,7 @@ $ git push</pre>
                 <% } %>
                 <p>
                 <% if (dbLatest) { %>
-                	Last 50 rows:</p><p>
+                	Last <%=dbNumResults%> rows:</p><p>
                    <pre><span class="code" id="count-value"><%=JSON.stringify(dbLatest, null, 4)%></span></pre>
                    </p>
                 <% } else { %>
