@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>DataGatherer</title>
 
-
+<script type="text/javascript" src="common.js"></script>
 <style>
 
 /*!
@@ -302,7 +302,7 @@ $ git push</pre>
                 <p>
                 <% if (dbLatest) { %>
                 	Last <%=dbNumResults%> rows:</p><p>
-                   <pre><span class="code" id="count-value"><%=JSON.stringify(dbLatest, null, 4)%></span></pre>
+                   <pre><span class="code" id="count-value"><%=prettyPrint(dbLatest, true, undefined, 1)%></span></pre>
                    </p>
                 <% } else { %>
                    <span class="code" id="count-value">No database configured</span>
